@@ -167,6 +167,22 @@ Regular expressions are automatically cached for performance. First use compiles
 - Monitor cache size with `GetCacheSize()`
 - Create database indexes on columns used in WHERE clauses
 
+**⚠️ Critical: Avoid N+1 Query Anti-Pattern**
+
+The most common performance issue occurs when executing individual REGEXP queries for each row in a dataset. See the [Architecture and Performance Guide](docs/architecture-and-performance.md) for detailed optimization strategies.
+
+```go
+// DANGEROUS: Individual queries per row
+for _, row := range rows {
+    db.QueryRow("SELECT category FROM patterns WHERE ? REGEXP pattern", row.Text)
+}
+
+// OPTIMAL: Single bulk query with correlated subquery
+db.Query(`SELECT text, 
+    (SELECT category FROM patterns WHERE text REGEXP pattern ORDER BY priority DESC LIMIT 1) 
+    FROM data`)
+```
+
 ## Troubleshooting
 
 ### CGO Build Errors
@@ -246,6 +262,15 @@ go test -race -v        # Test with race detection
 go test -bench=. -v     # Run benchmarks
 go test -cover -v       # Test with coverage
 ```
+
+## Documentation
+
+For comprehensive coverage of internals, performance optimization, and production deployment:
+
+- **[Architecture and Performance Guide](docs/architecture-and-performance.md)** - Detailed coverage of library internals, performance characteristics, and optimization strategies
+- **Performance Anti-Patterns** - Common pitfalls like N+1 queries and how to avoid them  
+- **Production Deployment** - Connection pooling, monitoring, and cache management
+- **Troubleshooting** - Solutions for performance issues and memory leaks
 
 ## License
 
