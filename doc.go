@@ -54,4 +54,3 @@
 //
 // For complete syntax reference, see: https://pkg.go.dev/regexp/syntax
 package sqlite_regexp
-
