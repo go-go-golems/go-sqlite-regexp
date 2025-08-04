@@ -1,6 +1,6 @@
 # Makefile for go-sqlite-regexp
 
-.PHONY: all build test test-race test-cover clean examples help
+.PHONY: all build test test-race test-cover clean examples help tag-major tag-minor tag-patch release
 
 # Default target
 all: test build
@@ -79,6 +79,20 @@ security:
 # Full CI pipeline
 ci: fmt tidy test-race test-cover build examples
 
+# Version tagging and release
+tag-major:
+	git tag $(shell svu major)
+
+tag-minor:
+	git tag $(shell svu minor)
+
+tag-patch:
+	git tag $(shell svu patch)
+
+release:
+	git push --tags
+	GOPROXY=proxy.golang.org go list -m github.com/go-go-golems/go-sqlite-regexp@$(shell svu current)
+
 # Help
 help:
 	@echo "Available targets:"
@@ -98,5 +112,9 @@ help:
 	@echo "  docs       - Generate documentation"
 	@echo "  security   - Check for security vulnerabilities"
 	@echo "  ci         - Run full CI pipeline"
+	@echo "  tag-major  - Tag a new major version"
+	@echo "  tag-minor  - Tag a new minor version"
+	@echo "  tag-patch  - Tag a new patch version"
+	@echo "  release    - Push tags and update module proxy"
 	@echo "  help       - Show this help"
 
