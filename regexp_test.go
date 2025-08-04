@@ -49,7 +49,9 @@ func TestOpenWithRegexp(t *testing.T) {
 	if err != nil {
 		t.Fatalf("OpenWithRegexp failed: %v", err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	// Test that REGEXP function is available
 	var result int
@@ -67,7 +69,9 @@ func TestRegexpJoin(t *testing.T) {
 	if err != nil {
 		t.Fatalf("OpenWithRegexp failed: %v", err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	// Create test tables
 	_, err = db.Exec(`
@@ -97,7 +101,9 @@ func TestRegexpJoin(t *testing.T) {
 	if err != nil {
 		t.Fatalf("REGEXP JOIN query failed: %v", err)
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	expected := []struct {
 		category string
@@ -181,7 +187,9 @@ func TestRegisterRegexpFunction(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to open database: %v", err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	// Register REGEXP function
 	err = RegisterRegexpFunction(db)
@@ -199,4 +207,3 @@ func TestRegisterRegexpFunction(t *testing.T) {
 		t.Errorf("Expected 1, got %d", result)
 	}
 }
-

@@ -59,7 +59,9 @@ func RegisterRegexpFunction(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
+	defer func() {
+		_ = conn.Close()
+	}()
 
 	return conn.Raw(func(driverConn interface{}) error {
 		sqliteConn, ok := driverConn.(*sqlite3.SQLiteConn)
@@ -82,7 +84,7 @@ func OpenWithRegexp(dataSourceName string) (*sql.DB, error) {
 	}
 
 	if err := RegisterRegexpFunction(db); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, err
 	}
 
@@ -104,4 +106,3 @@ func GetCacheSize() int {
 	regexpCache.RUnlock()
 	return size
 }
-
