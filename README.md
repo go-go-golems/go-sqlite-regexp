@@ -232,6 +232,36 @@ go build -o myapp main.go
 CGO_ENABLED=1 go build -ldflags '-extldflags "-static"' -o myapp main.go
 ```
 
+### Build a loadable SQLite extension (.so/.dylib)
+
+This repository can also produce a SQLite loadable extension that exposes a `regexp(text, pattern)` function for use in the `sqlite3` CLI or any SQLite embedding that supports extension loading.
+
+Build on Linux:
+
+```bash
+make so-linux
+# outputs: ./regexp.so
+```
+
+Build on macOS:
+
+```bash
+make so-darwin
+# outputs: ./regexp.dylib
+```
+
+Load in the SQLite CLI:
+
+```sql
+-- in sqlite3 shell
+.load ./regexp      -- sqlite will add the correct extension suffix
+SELECT 'hello' REGEXP 'h.llo';
+```
+
+Note:
+- Your sqlite3 must be built with extension loading enabled.
+- The extension is built with `-buildmode=c-shared` and uses Go's RE2 engine; behavior matches the Go package.
+
 ### Docker
 
 Use a base image with build tools:

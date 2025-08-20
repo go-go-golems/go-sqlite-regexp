@@ -1,6 +1,6 @@
 # Makefile for go-sqlite-regexp
 
-.PHONY: all build test test-race test-cover clean examples help tag-major tag-minor tag-patch release
+.PHONY: all build test test-race test-cover clean examples help tag-major tag-minor tag-patch release so so-linux so-darwin
 
 # Default target
 all: test build
@@ -71,6 +71,18 @@ docs:
 	@echo "Generating documentation..."
 	@go doc -all .
 
+# Build loadable SQLite extension (.so/.dylib) using c-shared
+# Output goes to dist/regexp.$(EXT)
+so: so-linux
+
+so-linux:
+	@echo "Building SQLite loadable extension for Linux (.so)..."
+	@CGO_ENABLED=1 go build -buildmode=c-shared -o regexp.so ./extension
+
+so-darwin:
+	@echo "Building SQLite loadable extension for macOS (.dylib)..."
+	@CGO_ENABLED=1 go build -buildmode=c-shared -o regexp.dylib ./extension
+
 # Check for security vulnerabilities
 security:
 	@echo "Checking for security vulnerabilities..."
@@ -110,6 +122,9 @@ help:
 	@echo "  tidy       - Tidy dependencies"
 	@echo "  deps       - Install dependencies"
 	@echo "  docs       - Generate documentation"
+	@echo "  so         - Build loadable SQLite extension for current OS"
+	@echo "  so-linux   - Build .so extension (Linux)"
+	@echo "  so-darwin  - Build .dylib extension (macOS)"
 	@echo "  security   - Check for security vulnerabilities"
 	@echo "  ci         - Run full CI pipeline"
 	@echo "  tag-major  - Tag a new major version"
