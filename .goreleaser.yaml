@@ -1,5 +1,5 @@
 version: 2
-project_name: XXX
+project_name: go-sqlite-regexp
 
 before:
   hooks:
@@ -9,17 +9,17 @@ before:
     - go generate ./...
 builds:
   - env:
-      - CGO_ENABLED=0
-    main: ./cmd/XXX
-    binary: XXX
+      - CGO_ENABLED=1
+    main: ./extension
+    binary: regexp
+    flags:
+      - -buildmode=c-shared
     goos:
       - linux
 # I am not able to test windows at the time
 #      - windows
-      - darwin
     goarch:
       - amd64
-      - arm64
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -37,9 +37,9 @@ signs:
     args: [ "--batch", "-u", "{{ .Env.GPG_FINGERPRINT }}", "--output", "${signature}", "--detach-sign", "${artifact}" ]
 
 brews:
-  - name: XXX
-    description: "XXX is a tool"
-    homepage: "https://github.com/go-go-golems/XXX"
+  - name: go-sqlite-regexp
+    description: "go-sqlite-regexp provides REGEXP functionality for SQLite"
+    homepage: "https://github.com/go-go-golems/go-sqlite-regexp"
     repository:
       owner: go-go-golems
       name: homebrew-go-go-go
@@ -54,7 +54,7 @@ nfpms:
     maintainer: Manuel Odendahl <wesen@ruinwesen.com>
 
     description: |-
-      XXX is a tool
+      go-sqlite-regexp provides REGEXP functionality for SQLite
 
     license: MIT
 
