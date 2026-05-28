@@ -11,12 +11,13 @@ builds:
   - env:
       - CGO_ENABLED=1
     main: ./extension
-    binary: regexp-extension
+    binary: regexp
+    flags:
+      - -buildmode=c-shared
     goos:
       - linux
 # I am not able to test windows at the time
 #      - windows
-      - darwin
     goarch:
       - amd64
       - arm64
