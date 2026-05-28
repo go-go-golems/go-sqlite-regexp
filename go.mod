@@ -2,6 +2,8 @@ module github.com/go-go-golems/go-sqlite-regexp
 
 go 1.25.0
 
+toolchain go1.25.10
+
 require (
 	github.com/go-go-golems/logcopter v0.1.0
 	github.com/mattn/go-sqlite3 v1.14.30
