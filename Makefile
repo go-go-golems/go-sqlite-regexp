@@ -133,3 +133,11 @@ help:
 	@echo "  release    - Push tags and update module proxy"
 	@echo "  help       - Show this help"
 
+
+.PHONY: logcopter-generate
+logcopter-generate:
+	GOWORK=off go generate ./...
+
+.PHONY: logcopter-check
+logcopter-check:
+	GOWORK=off go tool logcopter-gen -area-prefix go-go-golems.go-sqlite-regexp -strip-prefix github.com/go-go-golems/go-sqlite-regexp -check . ./extension
